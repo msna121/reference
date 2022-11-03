@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources: 
+  JobsTable: 
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "job_table"
+      AttributeDefinitions: 
+        - 
+          AttributeName: "job_id"
+          AttributeType: "S"
+        - 
+          AttributeName: "user_id"
+          AttributeType: "S"
+        - 
+          AttributeName: "modified_time"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "job_id"
+          KeyType: "HASH"
+        - 
+          AttributeName: "modified_time"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+      GlobalSecondaryIndexes: 
+        - 
+          IndexName: "user_id-index"
+          KeySchema: 
+            - 
+              AttributeName: "user_id"
+              KeyType: "HASH"
+            - 
+              AttributeName: "modified_time"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+  SettingsTable: 
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "settings_table"
+      AttributeDefinitions: 
+        - 
+          AttributeName: "app_name"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "app_name"
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+
+Outputs:
+  Jobs:
+    Description: Table Created using this template.
+    Value: !Ref JobsTable
+    
+  Settings:
+    Description: Table Created using this template.
+    Value: !Ref SettingsTable
